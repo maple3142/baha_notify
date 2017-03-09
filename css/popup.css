@@ -1,0 +1,15 @@
+body{
+    height: 400px;
+    width: 300px;
+}
+#nomsg{
+    display: none;
+}
+.btn:focus,.btn:active {
+   outline: none !important;
+}
+#list{
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
