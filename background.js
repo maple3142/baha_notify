@@ -18,6 +18,7 @@
                 var n=new Notification(t[1],{icon:icon});
                 n.onclick=function(){
                     open(l[1],'_blank');
+					n.close();
                 };
                 console.log(t[1]+' '+l[1]);
                 }
