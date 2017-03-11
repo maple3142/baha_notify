@@ -10,6 +10,9 @@ body{
 }
 #list{
     height: auto;
-    max-height: 400px;
+    max-height: 360px;
     overflow-x: hidden;
+}
+#clear{
+    height: 40px;
 }
