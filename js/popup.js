@@ -1,49 +1,30 @@
-chrome.runtime.onMessage.addListener(function(req,sender,sendresponse){
-    if(req.msg=='update'){
-        update();
-    }
-});
-moment.locale(navigator.language);
+const icon='https://api.gamer.com.tw/favicon.ico';
+const notificationxml='https://www.gamer.com.tw/ajax/notify.php?a=2';
 update();
-$('#clear').on('click',function(e){
-    if(confirm('確定清除?')){
-        console.log('clear');
-        clear();
-    }
-});
 function update(){
-    chrome.storage.local.get('msgs',function(r){
-        var msgs=r.msgs;
-        $('#list').html('');
-        if(msgs.length==0){
-            $('#nomsg').show();
-            chrome.browserAction.setBadgeText({text:''});
-        }
-        else{
-            chrome.browserAction.setBadgeText({text:msgs.length.toString()});
-            $('#nomsg').hide();
-            for(i in msgs){
-                $('#list').prepend(
-                    $('<li>').append(
-                        $('<a>').append(
-                            msgs[i].title
-                        ).attr('href',msgs[i].link).attr('target','_blank')
-                    ).append(
-                        $('<span>').append(
-                            moment(tformat(msgs[i].hours)+tformat(msgs[i].minutes),'HHmm').fromNow()
-                        ).addClass('pull-right')
-                    ).addClass('list-group-item')
-                );
+    $.ajax({
+            url: notificationxml,//return xml
+            method: 'GET',
+            success: function(d){
+                var data=$(d).find('allMsg').find('Msg').find('content');
+                data.each(e=>{
+                    var x=data[e].innerHTML;
+                    var t=/">(.*)<\/a>/g.exec(x);
+                    var l=/href="([^ ]*)"/g.exec(x);
+                    var p=/A\[(.*)<a/g.exec(x);
+                    var a=/a>(.*)]]/.exec(x);
+                    if(t&&l){
+                        $('#list').append(
+                            $('<li>').append(
+                                [p[1],$('<a>').append(
+                                    t[1]
+                                ).attr('href',l[1]).attr('target','_blank'),a[1]]
+                            ).addClass('list-group-item')
+                        );
+                    }
+                });
             }
-        }
-        
-        
-    });
-}
-function clear(){
-    chrome.storage.local.set({msgs:[]},function(){
-        update();
-    });
+        });
 }
 function tformat(s){
     s=s.toString();
